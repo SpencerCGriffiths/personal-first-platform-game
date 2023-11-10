@@ -6,9 +6,20 @@ canvas.width = 1024
 canvas.height = 576
 
 
-// set the context fillstyle to white as it is automatically matching the background white
-c.fillStyle = "white"
 
-//Set the size of the context object and original location, this will be our canvas to draw on
-// Arguments are X access, Y access, width, height
+
+let y = 100
+function animate() { 
+    window.requestAnimationFrame(animate)
+//^^ Calling recursive function to allow animation to happen
+c.fillStyle = "white"
 c.fillRect(0, 0, canvas.width, canvas.height)
+//^^ Creates white canvas background, within function to clear background each time to stop character "dripping"
+
+c.fillStyle = "red"
+c.fillRect(200, y, 100, 100)
+y++
+//^^ creates player with red blocking that falls on the y axis 
+}
+
+animate()
