@@ -30,20 +30,32 @@ floorCollisions2d.forEach((row, y) => {
     })
 })
 
-console.log(collisionBlocks)
+const PlatformCollisions2d = []
+for(let i = 0; i < PlatformCollisions.length; i += 36) { 
+    PlatformCollisions2d.push(PlatformCollisions.slice(i, i+36))
+}
+
+const PlatformCollisionBlocks = []
+
+PlatformCollisions2d.forEach((row, y) => { 
+    row.forEach((symbol, x) => { 
+        if (symbol === 202) { 
+            PlatformCollisionBlocks.push(new CollisionBlock({
+                position: {
+                    x: x * 16, 
+                    y: y * 16 
+                }}))
+        }
+    })
+})
 
 const gravity = 0.5
 
 const player = new Player({ 
-    x: 0, 
+    x: 500, 
     y: 0,
 })
 
-const player2 = new Player({ 
-    x: 300, 
-    y: 100,
-
-})
 
 const keys = { 
     d: { 
@@ -79,6 +91,9 @@ collisionBlocks.forEach((collisionBlock) => {
 })
 // ^^ calling the collision blocks and rendering them on the screen
 
+PlatformCollisionBlocks.forEach((block) => { 
+    block.update()
+})
 
 c.restore() 
 
@@ -86,7 +101,6 @@ c.restore()
 
 
 player.update()
-player2.update()
 
 
     player.velocity.x = 0 
