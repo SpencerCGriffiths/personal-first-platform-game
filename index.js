@@ -52,8 +52,13 @@ PlatformCollisions2d.forEach((row, y) => {
 const gravity = 0.5
 
 const player = new Player({ 
-    x: 500, 
-    y: 0,
+    position: { 
+        x: 100, 
+        y: 300,    
+    }, 
+    collisionBlocks,
+    imageSrc: "./img/warrior/Idle.png",
+    frameRate: 8, 
 })
 
 
@@ -94,18 +99,18 @@ collisionBlocks.forEach((collisionBlock) => {
 PlatformCollisionBlocks.forEach((block) => { 
     block.update()
 })
-
-c.restore() 
-
-// ^^ c.save and c.restore wrap whatever is inside to stop it impacting globally
-
-
 player.update()
 
 
     player.velocity.x = 0 
     if (keys.d.pressed) player.velocity.x = 5
     else if (keys.a.pressed) player.velocity.x = -5 
+
+c.restore() 
+
+// ^^ c.save and c.restore wrap whatever is inside to stop it impacting globally
+
+
 }
 
 animate()
@@ -119,7 +124,7 @@ window.addEventListener('keydown', (event) => {
         keys.a.pressed = true
         break
         case 'w': 
-        player.velocity.y = -15
+        player.velocity.y = -8
         break
     }
 }) 
