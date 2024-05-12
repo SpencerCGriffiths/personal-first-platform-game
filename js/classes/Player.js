@@ -23,7 +23,7 @@ class Player extends Sprite {
 
         this.animations = animations
         this.lastDirection = "right"
-
+        this.jumping = false
         for (let key in this.animations) { 
             const image = new Image() 
             image.src = this.animations[key].imageSrc

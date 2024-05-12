@@ -171,6 +171,7 @@ player.update()
         player.velocity.x = -2
         player.shouldPanCamToLeft({canvas, camera})
     } else if (player.velocity.y === 0) { 
+        player.jumping = false
         if(player.lastDirection === "right") { 
             player.switchSprite("Idle")
         } else if (player.lastDirection === "left") { 
@@ -213,7 +214,9 @@ window.addEventListener('keydown', (event) => {
         keys.a.pressed = true
         break
         case 'w': 
+        if(player.jumping) return
         player.velocity.y = -4
+        player.jumping = true
         break
     }
 }) 
