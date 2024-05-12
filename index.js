@@ -132,12 +132,25 @@ const camera = {
     }
 }
 
+const ctx = canvas.getContext('2d');
+const controller = new GameController({
+    context: ctx,
+    buttons: [
+        { x: 50, y: 500, width: 80, height: 40, label: 'Left', color: '#f00', onClick: () => player.moveLeft() },
+        { x: 150, y: 500, width: 80, height: 40, label: 'Jump', color: '#0f0', onClick: () => player.jump() },
+        { x: 250, y: 500, width: 80, height: 40, label: 'Right', color: '#00f', onClick: () => player.moveRight() }
+    ], 
+});
+
+// ^^^  Initialising the game controller
+
 function animate() { 
     window.requestAnimationFrame(animate)
 //^^ Calling recursive function to allow animation to happen
 c.fillStyle = "white"
 c.fillRect(0, 0, canvas.width, canvas.height)
 //^^ Creates white canvas background, within function to clear background each time to stop character "dripping"
+controller.draw()
 
 c.save()
 c.scale(4,4)
@@ -157,7 +170,6 @@ background.update()
 
 player.checkHorizontalCanvasCollision()
 player.update()
-
 // Handling sprite switching:
     player.velocity.x = 0 
     if (keys.d.pressed) { 
@@ -209,6 +221,7 @@ window.addEventListener('keydown', (event) => {
     switch (event.key) { 
         case 'd': 
         keys.d.pressed = true
+        console.log("d")
         break
        case 'a': 
         keys.a.pressed = true

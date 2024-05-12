@@ -1,0 +1,28 @@
+{
+  "name": "personal-first-platform-game",
+  "version": "1.0.0",
+  "description": "Platform Game",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SpencerCGriffiths/personal-first-platform-game.git"
+  },
+  "keywords": [
+    "Platform",
+    "Game",
+    "Collision"
+  ],
+  "author": "Spencer Clarke-Griffiths",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SpencerCGriffiths/personal-first-platform-game/issues"
+  },
+  "homepage": "https://github.com/SpencerCGriffiths/personal-first-platform-game#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
