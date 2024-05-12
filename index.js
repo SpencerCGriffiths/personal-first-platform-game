@@ -35,21 +35,22 @@ for(let i = 0; i < PlatformCollisions.length; i += 36) {
     PlatformCollisions2d.push(PlatformCollisions.slice(i, i+36))
 }
 
-const PlatformCollisionBlocks = []
+const platformCollisionBlocks = []
 
 PlatformCollisions2d.forEach((row, y) => { 
     row.forEach((symbol, x) => { 
         if (symbol === 202) { 
-            PlatformCollisionBlocks.push(new CollisionBlock({
+            platformCollisionBlocks.push(new CollisionBlock({
                 position: {
                     x: x * 16, 
                     y: y * 16 
-                }}))
+                },
+                height: 4}))
         }
     })
 })
 
-const gravity = 0.5
+const gravity = 0.1
 
 const player = new Player({ 
     position: { 
@@ -57,6 +58,7 @@ const player = new Player({
         y: 300,    
     }, 
     collisionBlocks,
+    platformCollisionBlocks,
     imageSrc: "./img/warrior/Idle.png",
     frameRate: 8, 
     animations: { 
@@ -64,11 +66,41 @@ const player = new Player({
             imageSrc: "./img/warrior/Idle.png",
             frameRate: 8,
             frameBuffer: 6,
+        },
+        IdleLeft: { 
+            imageSrc: "./img/warrior/IdleLeft.png",
+            frameRate: 8,
+            frameBuffer: 6,
         }, 
         Run: { 
             imageSrc: "./img/warrior/Run.png",
             frameRate: 8,
             frameBuffer: 5,
+        },
+        RunLeft: { 
+            imageSrc: "./img/warrior/RunLeft.png",
+            frameRate: 8,
+            frameBuffer: 5,
+        },
+        Jump: { 
+            imageSrc: "./img/warrior/Jump.png",
+            frameRate: 2,
+            frameBuffer: 3,
+        },
+        JumpLeft: { 
+            imageSrc: "./img/warrior/JumpLeft.png",
+            frameRate: 2,
+            frameBuffer: 3,
+        },
+        Fall: { 
+            imageSrc: "./img/warrior/Fall.png",
+            frameRate: 2,
+            frameBuffer: 3,
+        },
+        FallLeft: { 
+            imageSrc: "./img/warrior/FallLeft.png",
+            frameRate: 2,
+            frameBuffer: 3,
         }
     }
 })
@@ -91,6 +123,15 @@ const background = new Sprite({
     imageSrc: './img/background.png'
 })
 
+const backgroundImgHeight = 432
+
+const camera = { 
+    position: { 
+        x: 0, 
+        y: -backgroundImgHeight + scaledCanvas.height, 
+    }
+}
+
 function animate() { 
     window.requestAnimationFrame(animate)
 //^^ Calling recursive function to allow animation to happen
@@ -100,29 +141,59 @@ c.fillRect(0, 0, canvas.width, canvas.height)
 
 c.save()
 c.scale(4,4)
-c.translate(0, -background.image.height + scaledCanvas.height)
+c.translate(camera.position.x, camera.position.y)
 background.update()
 
-collisionBlocks.forEach((collisionBlock) => { 
-    collisionBlock.update()
-})
-// ^^ calling the collision blocks and rendering them on the screen
+// renders the collision blocks !!!!!! 
 
-PlatformCollisionBlocks.forEach((block) => { 
-    block.update()
-})
+// collisionBlocks.forEach((collisionBlock) => { 
+//     collisionBlock.update()
+// })
+// // ^^ calling the collision blocks and rendering them on the screen
+
+// platformCollisionBlocks.forEach((block) => { 
+//     block.update()
+// })
+
+player.checkHorizontalCanvasCollision()
 player.update()
 
-
+// Handling sprite switching:
     player.velocity.x = 0 
     if (keys.d.pressed) { 
         player.switchSprite(`Run`)
+        player.lastDirection = `right`
         player.velocity.x = 2
-    }else if (keys.a.pressed) { 
-        player.velocity.x = -2 
+        player.shouldPanCamToRight({canvas, camera})
+    }else if (keys.a.pressed) {
+        player.switchSprite(`RunLeft`)
+        player.lastDirection = `left`
+        player.velocity.x = -2
+        player.shouldPanCamToLeft({canvas, camera})
     } else if (player.velocity.y === 0) { 
-        player.switchSprite("Idle")
+        if(player.lastDirection === "right") { 
+            player.switchSprite("Idle")
+        } else if (player.lastDirection === "left") { 
+            player.switchSprite("IdleLeft")
+        }
+    } 
+    
+    if (player.velocity.y < 0) {
+        player.shouldPanCamUp({camera, canvas})
+        if(player.lastDirection === "right") { 
+            player.switchSprite(`Jump`) 
+        } else if (player.lastDirection === "left") { 
+            player.switchSprite(`JumpLeft`) 
+        }
+    } else if (player.velocity.y > 0 ) { 
+        player.shouldPanCamDown({camera, canvas})
+        if(player.lastDirection === "right") { 
+            player.switchSprite(`Fall`) 
+        } else if (player.lastDirection === "left") { 
+            player.switchSprite(`FallLeft`)
+        }
     }
+
 
 c.restore() 
 
@@ -142,7 +213,7 @@ window.addEventListener('keydown', (event) => {
         keys.a.pressed = true
         break
         case 'w': 
-        player.velocity.y = -8
+        player.velocity.y = -4
         break
     }
 }) 
